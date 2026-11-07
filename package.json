@@ -1,0 +1,11 @@
+{
+  "name": "zombie-arena",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Simple first-person browser game: survive waves of zombies in an arena.",
+  "scripts": {
+    "dev": "npx serve -l 5173 .",
+    "test": "node --test \"src/**/*.test.js\""
+  }
+}
