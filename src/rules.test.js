@@ -26,7 +26,10 @@ test('hits to kill: rifle 7, pistol 3, knife 2', () => {
 
 function simulate(ws, seconds, input, frameMs = 1000 / 60) {
   const shots = [];
-  for (let t = 0; t < seconds * 1000; t += frameMs) {
+  // Frame time from the frame index: a running sum of 1000/60 drifts below 1000 and adds a 61st frame.
+  const frames = Math.round((seconds * 1000) / frameMs);
+  for (let i = 0; i < frames; i++) {
+    const t = i * frameMs;
     ws.update(t);
     if (ws.tryFire(t, typeof input === 'function' ? input(t) : input)) shots.push(t);
   }
@@ -90,4 +93,73 @@ test('a shot after a pause waits a full interval (no early second shot)', () => 
   assert.ok(knife.tryFire(33, { held: true, pressedAt: 33 }));
   assert.equal(knife.tryFire(500, { held: true, pressedAt: 33 }), false);
   assert.ok(knife.tryFire(533, { held: true, pressedAt: 33 }));
+});
+
+// Steps the weapon with uneven frame times (cycled) and returns the shot times.
+function simulateSteps(ws, durationMs, steps, input) {
+  const shots = [];
+  let t = 0;
+  for (let i = 0; t < durationMs; i++) {
+    ws.update(t);
+    if (ws.tryFire(t, typeof input === 'function' ? input(t) : input)) shots.push(t);
+    t += steps[i % steps.length];
+  }
+  return shots;
+}
+
+function minGap(shots) {
+  let min = Infinity;
+  for (let i = 1; i < shots.length; i++) min = Math.min(min, shots[i] - shots[i - 1]);
+  return min;
+}
+
+const UNEVEN_STEPS = [
+  [16, 33, 7, 120],
+  [7, 7, 7, 120, 16],
+  [33, 16, 7, 7, 7, 120, 7],
+  [120, 7, 16, 33],
+  [7, 33, 7, 33, 16, 16, 120, 7],
+];
+
+for (const steps of UNEVEN_STEPS) {
+  const label = steps.join('/');
+
+  test(`rifle held fire, frames ${label} ms: every gap >= 100 ms`, () => {
+    const ws = new WeaponState(byId('rifle'));
+    const shots = simulateSteps(ws, 6000, steps, { held: true, pressedAt: 0 });
+    assert.ok(shots.length >= 30, `shots=${shots.length}`);
+    const gap = minGap(shots);
+    assert.ok(gap >= 100, `min gap ${gap} ms, shots ${shots.join(',')}`);
+  });
+
+  test(`pistol clicked every frame, frames ${label} ms: every gap >= 250 ms`, () => {
+    const ws = new WeaponState(byId('pistol'));
+    const shots = simulateSteps(ws, 6000, steps, (t) => ({ held: true, pressedAt: t }));
+    assert.ok(shots.length >= 12, `shots=${shots.length}`);
+    const gap = minGap(shots);
+    assert.ok(gap >= 250, `min gap ${gap} ms, shots ${shots.join(',')}`);
+  });
+
+  test(`pistol held fire, frames ${label} ms: one shot, every gap >= 250 ms`, () => {
+    const ws = new WeaponState(byId('pistol'));
+    const shots = simulateSteps(ws, 3000, steps, { held: true, pressedAt: 0 });
+    assert.equal(shots.length, 1);
+    assert.ok(minGap(shots) >= 250);
+  });
+
+  test(`knife held attack, frames ${label} ms: every gap >= 500 ms`, () => {
+    const ws = new WeaponState(byId('knife'));
+    const shots = simulateSteps(ws, 6000, steps, { held: true, pressedAt: 0 });
+    assert.ok(shots.length >= 8, `swings=${shots.length}`);
+    const gap = minGap(shots);
+    assert.ok(gap >= 500, `min gap ${gap} ms, swings ${shots.join(',')}`);
+  });
+}
+
+test('pistol: a late shot at 280 ms does not allow a second shot at 500 ms', () => {
+  const ws = new WeaponState(byId('pistol'));
+  assert.ok(ws.tryFire(0, { held: true, pressedAt: 0 }));
+  assert.ok(ws.tryFire(280, { held: true, pressedAt: 280 }));
+  assert.equal(ws.tryFire(500, { held: true, pressedAt: 500 }), false);
+  assert.ok(ws.tryFire(530, { held: true, pressedAt: 530 }));
 });

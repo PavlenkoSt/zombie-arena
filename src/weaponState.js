@@ -1,7 +1,8 @@
 import { CLICK_BUFFER_MS } from './config.js';
 
-// A shot up to this late still keeps the exact rate of a held trigger (about two frames).
-const LAG_TOLERANCE_MS = 34;
+// Game time is a sum of float frame steps, so six 1000/60 ms frames can add up to
+// 99.99999999999977 ms. This tolerance only absorbs that rounding noise (1 microsecond).
+const TIME_EPSILON_MS = 0.001;
 
 // Ammo, reload and fire-rate logic for one weapon. No rendering here.
 // All times are game milliseconds.
@@ -9,7 +10,7 @@ export class WeaponState {
   constructor(def) {
     this.def = def;
     this.mag = def.mag;
-    this.nextReady = -Infinity;
+    this.lastShotAt = -Infinity;
     this.reloadEnd = null;
     this.lastConsumedPress = -Infinity;
   }
@@ -48,11 +49,17 @@ export class WeaponState {
     }
   }
 
+  // Ready when at least intervalMs has passed since the actual time of the last shot.
+  isReady(now) {
+    return now - this.lastShotAt >= this.def.intervalMs - TIME_EPSILON_MS;
+  }
+
   // input: { held: boolean, pressedAt: ms of the last mouse-down }
   // Returns true when a shot / swing happens now.
+
   tryFire(now, input) {
     const def = this.def;
-    if (this.reloadEnd !== null || now < this.nextReady) return false;
+    if (this.reloadEnd !== null || !this.isReady(now)) return false;
     if (!def.melee && this.mag <= 0) return false;
 
     const freshPress =
@@ -61,10 +68,7 @@ export class WeaponState {
     if (!wants) return false;
 
     this.lastConsumedPress = Math.max(this.lastConsumedPress, input.pressedAt);
-    // Keep the exact rate when the trigger is held (frames do not line up with the interval).
-    // After a longer pause the interval counts from this shot.
-    const base = now - this.nextReady <= LAG_TOLERANCE_MS ? this.nextReady : now;
-    this.nextReady = base + def.intervalMs;
+    this.lastShotAt = now;
     if (!def.melee) this.mag -= 1;
     return true;
   }
