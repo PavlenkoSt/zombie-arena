@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZOMBIE ARENA</title>
+  <link rel="stylesheet" href="src/style.css">
+  <script type="importmap">
+    { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="stats">
+      <div id="wave">Wave 1</div>
+      <div id="kills">Kills 0</div>
+    </div>
+    <div id="crosshair"></div>
+    <div id="health">
+      <div class="hp-row"><span class="hp-label">HP</span><span id="hp-text">100</span></div>
+      <div class="bar"><div id="hp-fill"></div></div>
+    </div>
+    <div id="ammo">
+      <div id="reload-note"></div>
+      <div id="weapon-name">Rifle</div>
+      <div id="ammo-count">30 / ∞</div>
+      <div id="slots">
+        <span class="slot active">1 Rifle</span>
+        <span class="slot">2 Pistol</span>
+        <span class="slot">3 Knife</span>
+      </div>
+    </div>
+    <div id="damage-flash"></div>
+    <div id="banner"></div>
+  </div>
+
+  <div id="start-screen" class="overlay">
+    <h1>ZOMBIE ARENA</h1>
+    <p id="start-hint" class="hint">Click to play</p>
+    <ul class="controls">
+      <li><b>WASD</b> move</li>
+      <li><b>Shift</b> sprint</li>
+      <li><b>Mouse</b> look</li>
+      <li><b>Left click</b> attack</li>
+      <li><b>1 / 2 / 3</b> or <b>wheel</b> switch weapon</li>
+      <li><b>R</b> reload</li>
+    </ul>
+  </div>
+
+  <div id="game-over" class="overlay hidden">
+    <h1 class="dead">YOU DIED</h1>
+    <p id="go-wave" class="stat">Wave reached: 1</p>
+    <p id="go-kills" class="stat">Kills: 0</p>
+    <p class="hint">Click to restart</p>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
