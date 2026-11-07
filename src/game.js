@@ -52,7 +52,8 @@ export class Game {
 
   resetWorld() {
     this.player = { x: 0, z: 0, yaw: 0, pitch: 0, hp: PLAYER.maxHp, moveAmount: 0 };
-    this.time = 0;
+    this.clockMs = 0; // exact sum of frame steps
+    this.time = 0; // game time in integer ms, used by all game rules
     this.kills = 0;
     this.wave = 0;
     this.nextWaveAt = null;
@@ -246,7 +247,9 @@ export class Game {
     dt = Math.min(dt, MAX_DT);
     const playing = this.state === 'playing';
     if (playing) {
-      this.time += dt * 1000;
+      // Integer ms: six 1000/60 ms frames give exactly 100 ms, not 99.99999999999977.
+      this.clockMs += dt * 1000;
+      this.time = Math.round(this.clockMs);
       this.updatePlayer(dt);
       const ws = this.weapon;
       ws.update(this.time);

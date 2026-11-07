@@ -26,10 +26,10 @@ test('hits to kill: rifle 7, pistol 3, knife 2', () => {
 
 function simulate(ws, seconds, input, frameMs = 1000 / 60) {
   const shots = [];
-  // Frame time from the frame index: a running sum of 1000/60 drifts below 1000 and adds a 61st frame.
+  // Frame time stamps in integer ms, the same as the game clock (Game.update rounds game time).
   const frames = Math.round((seconds * 1000) / frameMs);
   for (let i = 0; i < frames; i++) {
-    const t = i * frameMs;
+    const t = Math.round(i * frameMs);
     ws.update(t);
     if (ws.tryFire(t, typeof input === 'function' ? input(t) : input)) shots.push(t);
   }
@@ -163,3 +163,17 @@ test('pistol: a late shot at 280 ms does not allow a second shot at 500 ms', () 
   assert.equal(ws.tryFire(500, { held: true, pressedAt: 500 }), false);
   assert.ok(ws.tryFire(530, { held: true, pressedAt: 530 }));
 });
+
+// Fractional boundary: a request 0.0005 ms before the full interval is refused,
+// a request at exactly the interval is allowed. No tolerance below the interval.
+for (const [id, interval] of [['rifle', 100], ['pistol', 250], ['knife', 500]]) {
+  test(`${id}: request at ${interval - 0.0005} ms after the last shot is refused, at ${interval} ms is allowed`, () => {
+    for (const last of [0, 1000, 123456]) {
+      const ws = new WeaponState(byId(id));
+      assert.ok(ws.tryFire(last, { held: true, pressedAt: last }), 'first shot');
+      const early = last + interval - 0.0005;
+      assert.equal(ws.tryFire(early, { held: true, pressedAt: early }), false, `shot at +${early - last} ms`);
+      assert.ok(ws.tryFire(last + interval, { held: true, pressedAt: last + interval }), `shot at +${interval} ms`);
+    }
+  });
+}

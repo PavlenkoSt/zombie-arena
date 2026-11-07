@@ -1,9 +1,5 @@
 import { CLICK_BUFFER_MS } from './config.js';
 
-// Game time is a sum of float frame steps, so six 1000/60 ms frames can add up to
-// 99.99999999999977 ms. This tolerance only absorbs that rounding noise (1 microsecond).
-const TIME_EPSILON_MS = 0.001;
-
 // Ammo, reload and fire-rate logic for one weapon. No rendering here.
 // All times are game milliseconds.
 export class WeaponState {
@@ -49,9 +45,10 @@ export class WeaponState {
     }
   }
 
-  // Ready when at least intervalMs has passed since the actual time of the last shot.
+  // Ready when at least the full intervalMs has passed since the actual time of the last shot.
+  // Exact compare, no tolerance: the game clock gives integer ms (see Game.update).
   isReady(now) {
-    return now - this.lastShotAt >= this.def.intervalMs - TIME_EPSILON_MS;
+    return now - this.lastShotAt >= this.def.intervalMs;
   }
 
   // input: { held: boolean, pressedAt: ms of the last mouse-down }
