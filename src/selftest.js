@@ -13,8 +13,16 @@ export async function run(game) {
   const out = document.createElement('pre');
   out.id = 'selftest';
   out.style.cssText =
-    'position:fixed;inset:0;z-index:50;margin:0;padding:16px;background:#000;color:#ddd;font:13px/1.35 monospace;overflow:auto;white-space:pre-wrap';
+    'position:fixed;inset:0;z-index:50;margin:0;padding:96px 16px 16px;background:#000;color:#ddd;font:13px/1.35 monospace;overflow:auto;white-space:pre-wrap';
   document.body.appendChild(out);
+
+  // Summary box at the top of the page: passed, failed and page-error counts.
+  const summary = document.createElement('div');
+  summary.id = 'selftest-summary';
+  summary.style.cssText =
+    'position:fixed;top:0;left:0;right:0;z-index:51;padding:18px 16px;font:bold 28px/1.2 monospace;color:#fff;background:#555;border-bottom:3px solid #000';
+  summary.textContent = 'SELFTEST RUNNING…';
+  document.body.appendChild(summary);
 
   const check = (name, ok, detail = '') => {
     results.push(ok);
@@ -401,6 +409,10 @@ export async function run(game) {
   game.state = 'menu';
   check('no page errors', window.__errors.length === 0, window.__errors.join(' | '));
   const passed = results.filter(Boolean).length;
-  out.textContent += `\nSELFTEST ${passed === results.length ? 'OK' : 'FAILED'}: ${passed}/${results.length} passed\n`;
-  window.__selftest = { passed, total: results.length };
+  const failed = results.length - passed;
+  const pageErrors = window.__errors.length;
+  out.textContent += `\nSELFTEST ${failed === 0 ? 'OK' : 'FAILED'}: ${passed}/${results.length} passed\n`;
+  summary.textContent = `SELFTEST ${failed === 0 && pageErrors === 0 ? 'OK' : 'FAILED'}: ${passed} / ${results.length} passed, ${failed} failed, ${pageErrors} page errors`;
+  summary.style.background = failed === 0 && pageErrors === 0 ? '#1e7a34' : '#c0392b';
+  window.__selftest = { passed, failed, pageErrors, total: results.length };
 }

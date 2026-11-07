@@ -166,13 +166,26 @@ test('pistol: a late shot at 280 ms does not allow a second shot at 500 ms', () 
 
 // Fractional boundary: a request 0.0005 ms before the full interval is refused,
 // a request at exactly the interval is allowed. No tolerance below the interval.
+// "last" is the actual time of the last shot. In the late cases the last shot came
+// lateBy ms after the weapon was ready, so a schedule that counts from the planned
+// time instead of the actual shot allows the early request.
 for (const [id, interval] of [['rifle', 100], ['pistol', 250], ['knife', 500]]) {
   test(`${id}: request at ${interval - 0.0005} ms after the last shot is refused, at ${interval} ms is allowed`, () => {
-    for (const last of [0, 1000, 123456]) {
+    const cases = [];
+    for (const start of [0, 1000, 123456]) {
+      cases.push({ start, lateBy: null });
+      for (const lateBy of [1, 20, 33, 30.5]) cases.push({ start, lateBy });
+    }
+    for (const { start, lateBy } of cases) {
       const ws = new WeaponState(byId(id));
-      assert.ok(ws.tryFire(last, { held: true, pressedAt: last }), 'first shot');
+      assert.ok(ws.tryFire(start, { held: true, pressedAt: start }), 'first shot');
+      let last = start;
+      if (lateBy !== null) {
+        last = start + interval + lateBy;
+        assert.ok(ws.tryFire(last, { held: true, pressedAt: last }), `late shot ${lateBy} ms after ready`);
+      }
       const early = last + interval - 0.0005;
-      assert.equal(ws.tryFire(early, { held: true, pressedAt: early }), false, `shot at +${early - last} ms`);
+      assert.equal(ws.tryFire(early, { held: true, pressedAt: early }), false, `shot at +${early - last} ms (start ${start}, late by ${lateBy})`);
       assert.ok(ws.tryFire(last + interval, { held: true, pressedAt: last + interval }), `shot at +${interval} ms`);
     }
   });
