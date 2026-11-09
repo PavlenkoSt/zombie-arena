@@ -1,0 +1,58 @@
+{
+"version": 1,
+"repository": {"host":"github.com","canonical":"pavlenkost/zombie-arena"},
+"target": "main",
+"lease": null,
+"items": [
+{"id":"pr-1","pr":1,"branch":"8code-landing/04ed29c2-3f02-41ce-b5b4-58d41db97a77","head":"829a6712f4e8f85d4e1bf0600137fd3d3fd2577c","patchId":"1e8033bfc05c1688345d1a6666558b670599510f23102df0da13854fddb0b6c1","pairId":null,"by":{"person":"Stas Pavlenko","agent":"lane"},"enqueuedAt":"2026-11-09T16:34:34.697Z","seq":1,"state":"landed","attempts":2,"stackId":"stk_ec92139b1f73","reason":null,"files":["README.md","index.html","src/game.js","src/hud.js","src/main.js","src/selftestMobile.js","src/shots.js","src/style.css","src/touchControls.js","src/touchControls.test.js","src/viewport.html"],"imports":null,"capped":true,"pull":{"title":"Phone controls: remove stray browser log files","author":"PavlenkoSt"},"landedAt":"2026-11-09T16:41:19.423Z","stages":{"workspacePrep":2049,"checksQueued":126531,"checksRunning":264901,"landingMerge":7168},"landedAs":"92b17fb6db26520460379011bb91bcf8f0789291"},
+{"id":"pr-2","pr":2,"branch":"8code-landing/b0ec17cb-d7d9-4000-ba3c-e67bb2ef6565","head":"4f3fcef2008259fce57219db08e91aadbc306a30","patchId":"54c2b02dd2078ec239cb0951e83f56b3abc5305bc30f22b5d93b25df7da8ed96","pairId":null,"by":{"person":"Stas Pavlenko","agent":"lane"},"enqueuedAt":"2026-11-09T17:19:24.192Z","seq":2,"state":"landed","attempts":1,"stackId":"stk_d335c5322bd5","reason":null,"files":["README.md","index.html","src/config.js","src/game.js","src/main.js","src/rules.js","src/rules.test.js","src/selftest.js","src/selftestMobile.js","src/shots.js","src/style.css","src/touchControls.js"],"imports":null,"capped":true,"pull":{"title":"Jump","author":"PavlenkoSt"},"landedAt":"2026-11-09T17:19:51.612Z","stages":{"workspacePrep":387,"checksQueued":8853,"checksRunning":2452,"landingMerge":8746},"landedAs":"8b4dcd59f785835bd92dcc9ec8b7f1a80826258e"},
+{"id":"pr-3","pr":3,"branch":"8code-landing/a6af3481-d83c-43ca-a093-65bf3c9914d1","head":"098696d5c196ee1354d4898256cd660dce7bcf2c","patchId":"a49dc9d6888c2d5caf3f83923559e838b0a6e3fbd190e0fe07ad7a6ec9b55c2b","pairId":null,"by":{"person":"Stas Pavlenko","agent":"lane"},"enqueuedAt":"2026-11-09T18:37:20.261Z","seq":3,"state":"landed","attempts":1,"stackId":"stk_2aed21377193","reason":null,"files":["README.md","assets/icon.svg","assets/logo.svg","index.html","src/logo.test.js","src/selftest.js","src/selftestMobile.js","src/shots.js","src/style.css"],"imports":["src/config.js","src/rng.js","src/rules.js"],"pull":{"title":"Game logo: add proof check","author":"PavlenkoSt"},"landedAt":"2026-11-09T18:37:48.665Z","stages":{"workspacePrep":374,"checksQueued":8705,"checksRunning":1995,"landingMerge":11632},"landedAs":"1ac592a150697924f1b1613bfc5caa7da6f9a0b7"}
+],
+"stacks": [
+{"id":"stk_14195533f2f7","base":"11b69d777e6ecf86a6e46d8b959df9685a924acf","itemIds":["pr-1"],"tree":"03656eca2fee2247ce5927a2c34db470abecea28","startedAt":"2026-11-09T16:34:43.520Z","runner":{"machineId":"8code-081a40a7-c9d9-4832-8d27-ffca48246371","person":"Stas Pavlenko","app":"8code"},"result":"aborted","failing":[],"culprit":null,"probes":[],"tested":[{"id":"pr-1","head":"829a6712f4e8f85d4e1bf0600137fd3d3fd2577c","files":["README.md","index.html","src/game.js","src/hud.js","src/main.js","src/selftestMobile.js","src/shots.js","src/style.css","src/touchControls.js","src/touchControls.test.js","src/viewport.html"],"imports":null,"capped":true}],"secondLook":true,"runs":[{"kind":"gate","itemIds":["pr-1"],"tree":"03656eca2fee2247ce5927a2c34db470abecea28","files":null,"startedAt":"2026-11-09T16:34:43.520Z","endedAt":"2026-11-09T16:36:31.403Z","result":"aborted","failing":[],"reason":"holder_gone"}],"gateStartedAt":"2026-11-09T16:34:43.520Z","stages":{"workspacePrep":387},"fates":{"pr-1":{"fate":"unclear","reason":"aborted","at":"2026-11-09T16:36:31.403Z"}},"ended":{"code":"holder_gone","by":"8code-081a40a7-c9d9-4832-8d27-ffca48246371","at":"2026-11-09T16:36:31.403Z","why":"The run that held it stopped without a word; a later turn found it and put its pull requests back in line."}},
+{"id":"stk_ec92139b1f73","base":"11b69d777e6ecf86a6e46d8b959df9685a924acf","itemIds":["pr-1"],"tree":"03656eca2fee2247ce5927a2c34db470abecea28","startedAt":"2026-11-09T16:36:41.228Z","runner":{"machineId":"8code-081a40a7-c9d9-4832-8d27-ffca48246371","person":"Stas Pavlenko","app":"8code"},"result":"green","failing":[],"culprit":null,"probes":[],"tested":[{"id":"pr-1","head":"829a6712f4e8f85d4e1bf0600137fd3d3fd2577c","files":["README.md","index.html","src/game.js","src/hud.js","src/main.js","src/selftestMobile.js","src/shots.js","src/style.css","src/touchControls.js","src/touchControls.test.js","src/viewport.html"],"imports":null,"capped":true}],"secondLook":true,"runs":[{"kind":"gate","itemIds":["pr-1"],"tree":"03656eca2fee2247ce5927a2c34db470abecea28","files":null,"startedAt":"2026-11-09T16:36:41.228Z","endedAt":"2026-11-09T16:41:06.129Z","result":"green","failing":[]}],"gateStartedAt":"2026-11-09T16:36:41.228Z","stages":{"workspacePrep":2049,"checksRunning":264901},"gateFinishedAt":"2026-11-09T16:41:06.129Z"},
+{"id":"stk_d335c5322bd5","base":"92b17fb6db26520460379011bb91bcf8f0789291","itemIds":["pr-2"],"tree":"f434f4f14c77c31fc0779c1099cb50a72c219da5","startedAt":"2026-11-09T17:19:33.045Z","runner":{"machineId":"8code-081a40a7-c9d9-4832-8d27-ffca48246371","person":"Stas Pavlenko","app":"8code"},"result":"green","failing":[],"culprit":null,"probes":[],"tested":[{"id":"pr-2","head":"4f3fcef2008259fce57219db08e91aadbc306a30","files":["README.md","index.html","src/config.js","src/game.js","src/main.js","src/rules.js","src/rules.test.js","src/selftest.js","src/selftestMobile.js","src/shots.js","src/style.css","src/touchControls.js"],"imports":null,"capped":true}],"secondLook":true,"runs":[{"kind":"gate","itemIds":["pr-2"],"tree":"f434f4f14c77c31fc0779c1099cb50a72c219da5","files":null,"startedAt":"2026-11-09T17:19:33.045Z","endedAt":"2026-11-09T17:19:35.497Z","result":"green","failing":[]}],"gateStartedAt":"2026-11-09T17:19:33.045Z","stages":{"workspacePrep":387,"checksRunning":2452},"gateFinishedAt":"2026-11-09T17:19:35.497Z"},
+{"id":"stk_2aed21377193","base":"8b4dcd59f785835bd92dcc9ec8b7f1a80826258e","itemIds":["pr-3"],"tree":"cc453bdf5b218aa81c5bd0c134220e0ab1d470cd","startedAt":"2026-11-09T18:37:28.966Z","runner":{"machineId":"8code-081a40a7-c9d9-4832-8d27-ffca48246371","person":"Stas Pavlenko","app":"8code"},"result":"green","failing":[],"culprit":null,"probes":[],"tested":[{"id":"pr-3","head":"098696d5c196ee1354d4898256cd660dce7bcf2c","files":["README.md","assets/icon.svg","assets/logo.svg","index.html","src/logo.test.js","src/selftest.js","src/selftestMobile.js","src/shots.js","src/style.css"],"imports":["src/config.js","src/rng.js","src/rules.js"]}],"secondLook":true,"runs":[{"kind":"gate","itemIds":["pr-3"],"tree":"cc453bdf5b218aa81c5bd0c134220e0ab1d470cd","files":null,"startedAt":"2026-11-09T18:37:28.966Z","endedAt":"2026-11-09T18:37:30.961Z","result":"green","failing":[]}],"gateStartedAt":"2026-11-09T18:37:28.966Z","stages":{"workspacePrep":374,"checksRunning":1995},"gateFinishedAt":"2026-11-09T18:37:30.961Z"}
+],
+"approvals": [
+{"patchId":"1e8033bfc05c1688345d1a6666558b670599510f23102df0da13854fddb0b6c1","pr":1,"verdict":"approve","reviewer":"review by gpt-6-1-sol","at":"2026-11-09T16:34:34.697Z","summary":"Phone controls: remove stray browser log files"},
+{"patchId":"54c2b02dd2078ec239cb0951e83f56b3abc5305bc30f22b5d93b25df7da8ed96","pr":2,"verdict":"approve","reviewer":"review by gpt-6-1-sol","at":"2026-11-09T17:19:24.192Z","summary":"Jump"},
+{"patchId":"a49dc9d6888c2d5caf3f83923559e838b0a6e3fbd190e0fe07ad7a6ec9b55c2b","pr":3,"verdict":"approve","reviewer":"review by gpt-6-1-sol","at":"2026-11-09T18:37:20.261Z","summary":"Game logo: add proof check"}
+],
+"mainHealth": {"red":[],"afterMerge":{"through":"1ac592a150697924f1b1613bfc5caa7da6f9a0b7","at":"2026-11-09T18:37:51.990Z"},"mainCheck":{"main":"1ac592a150697924f1b1613bfc5caa7da6f9a0b7","at":"2026-11-09T18:37:51.990Z","green":true,"failing":0,"wholeAt":"2026-11-09T18:37:51.990Z","wholeMain":"1ac592a150697924f1b1613bfc5caa7da6f9a0b7"}},
+"pairs": [],
+"operations": [
+{"id":"3e131f6c-4d75-4a62-9029-b6d162c62479","seq":1,"at":"2026-11-09T16:34:36.159Z"},
+{"id":"94545dbd-af93-4b3c-9e60-3246c575d87f","seq":2,"at":"2026-11-09T16:34:39.758Z"},
+{"id":"388639b6-0fc3-4732-9048-28ab50be8067","seq":3,"at":"2026-11-09T16:34:43.521Z"},
+{"id":"a9e9b94c-20b7-4996-a479-d7e9a9b19b15","seq":4,"at":"2026-11-09T16:36:31.404Z"},
+{"id":"daccebc6-d01d-482d-851a-70dc10f91fd7","seq":5,"at":"2026-11-09T16:36:35.394Z"},
+{"id":"25565a0a-f854-4d39-bdf7-5db917085907","seq":6,"at":"2026-11-09T16:36:41.228Z"},
+{"id":"4e6466da-e9ec-48d7-bbf2-f4d74bf33f09","seq":7,"at":"2026-11-09T16:37:30.953Z"},
+{"id":"4639dece-35d2-4685-bce8-4a60de7dbdce","seq":8,"at":"2026-11-09T16:39:34.328Z"},
+{"id":"b3222941-5b4e-4ff7-a76c-6bf9a568c5b4","seq":9,"at":"2026-11-09T16:41:06.908Z"},
+{"id":"c81ffe8e-c73e-4073-a999-7da90a24afcd","seq":10,"at":"2026-11-09T16:41:12.255Z"},
+{"id":"3bf06bed-84b5-49d3-b2e2-8f8333c36c6e","seq":11,"at":"2026-11-09T16:41:14.739Z"},
+{"id":"32faa968-b0b9-42aa-82a3-004011b6dd97","seq":12,"at":"2026-11-09T16:41:19.423Z"},
+{"id":"abc9b3a5-d205-4767-ad5f-5c844550d185","seq":13,"at":"2026-11-09T16:41:23.299Z"},
+{"id":"c74ca9c8-422c-4212-bffd-a0acbcdac7fa","seq":14,"at":"2026-11-09T17:13:12.648Z"},
+{"id":"9de07da3-427b-4f66-be7b-b340152b5378","seq":15,"at":"2026-11-09T17:19:25.009Z"},
+{"id":"53490637-ec00-4973-a712-2d4d0d9f27a3","seq":16,"at":"2026-11-09T17:19:28.621Z"},
+{"id":"60c031ce-ea1d-4f5e-b38e-dbb13db21f32","seq":17,"at":"2026-11-09T17:19:33.046Z"},
+{"id":"4140b3ac-bcab-4fdb-a713-aa257c189fc9","seq":18,"at":"2026-11-09T17:19:36.225Z"},
+{"id":"d4893443-8a5c-4930-af0f-bee68338b763","seq":19,"at":"2026-11-09T17:19:42.866Z"},
+{"id":"8f69fa97-df5d-4043-b095-f55ff0cdebef","seq":20,"at":"2026-11-09T17:19:46.325Z"},
+{"id":"e8244189-3c01-4efb-b8c6-e4ee4757a58a","seq":21,"at":"2026-11-09T17:19:51.612Z"},
+{"id":"c23ecce4-ac77-40e9-a10d-e80634db8890","seq":22,"at":"2026-11-09T17:19:55.919Z"},
+{"id":"b5bd48ec-bbe3-4f5a-94dd-ef492228b1c2","seq":23,"at":"2026-11-09T17:43:49.786Z"},
+{"id":"1d411c16-6175-4b1a-8e77-43441203250f","seq":24,"at":"2026-11-09T18:37:21.041Z"},
+{"id":"e43e7042-fd7e-4677-a2a0-9fa4c55f0cf1","seq":25,"at":"2026-11-09T18:37:25.134Z"},
+{"id":"9be41788-7c6c-4688-9ac3-15b713085ba8","seq":26,"at":"2026-11-09T18:37:28.967Z"},
+{"id":"48d84475-9ded-42a2-b26e-0510812e705a","seq":27,"at":"2026-11-09T18:37:31.707Z"},
+{"id":"e102f615-d30c-4b4f-87c3-b029ad122dfa","seq":28,"at":"2026-11-09T18:37:37.034Z"},
+{"id":"2cb4fc5a-cfcb-4222-9e24-b45643f3c527","seq":29,"at":"2026-11-09T18:37:39.798Z"},
+{"id":"8546021d-926d-44d9-8b7f-3e871357c6b4","seq":30,"at":"2026-11-09T18:37:48.665Z"},
+{"id":"ebe5e2f0-0f00-4d0c-bfed-8ae9f2e25afd","seq":31,"at":"2026-11-09T18:37:52.738Z"},
+{"id":"df539fda-ecd0-4be8-ba29-6ea2b41af2bc","seq":32,"at":"2026-11-09T19:57:31.051Z"}
+]
+}
