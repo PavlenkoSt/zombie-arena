@@ -1,0 +1,21 @@
+- generic [active] [ref=f1e1]:
+  - generic:
+    - generic:
+      - generic: Wave 3
+      - generic: Kills 4
+    - generic:
+      - generic:
+        - generic: HP
+        - generic: "0"
+    - generic:
+      - generic: Rifle
+      - generic: 30 / ∞
+      - generic: 1 Rifle 2 Pistol 3 Knife
+    - generic: WAVE 1
+  - generic [ref=f1e3] [cursor=pointer]:
+    - heading "YOU DIED" [level=1] [ref=f1e4]
+    - paragraph [ref=f1e5]: "Wave reached: 3"
+    - paragraph [ref=f1e6]: "Kills: 4"
+    - paragraph [ref=f1e7]: Click to restart
+  - generic [ref=f1e8]: "ZOMBIE ARENA self-test PASS start screen shows title and prompt PASS rifle: zombie dies after 7 hits of 15 damage [hits=7] PASS rifle kill counted [kills=1] PASS rifle: 10 shots in the first second [shots=10] PASS rifle: mag 30, 30th shot 2900 ms after the first [shots=30 span=2900.0ms] PASS rifle: mag empty then auto reload starts PASS rifle: reload 2000 ms, mag back to 30 [took=2000.0ms mag=30] PASS R key reload (rifle) takes 2000 ms [took=2000.0ms] PASS key 2 selects pistol PASS pistol: zombie dies after 3 hits of 35 damage [hits=3] PASS pistol: max 4 shots per second when clicking every frame [shots=4] PASS pistol: holding the button gives one shot [shots=1] PASS pistol: mag 12 empties after 12 shots, reload starts [mag=0] PASS pistol: reload 1200 ms, mag back to 12 [took=1200.0ms] PASS key 3 selects knife PASS knife: 2 swings in the first second (500 ms apart) [swings=2] PASS knife: zombie dies after 2 hits of 60 damage [hp=0] PASS knife: range 2 (zombie at 2.15 is not hit) [hp=100] PASS knife: zombie at 1.9 is hit [hp=40] PASS weapons keep their own mag after switching PASS three different first-person models [parts=11/10/6] PASS walk 5 units/s [dz=5.000] PASS sprint 8 units/s [dz=8.000] PASS player stops at the north wall [z=-29.600] PASS player stops at the east wall [x=29.600] PASS player stops at the west wall [x=-29.600] PASS player stops at the south wall [z=29.600] PASS player cannot walk into a crate [z=-6.600 crateEdge=-7] PASS wave speeds: 2.0, 2.15, max 4 PASS zombie walks toward player at 2.0 units/s [z=-8.000] PASS zombie hits at once within 1.5 units (-10 HP) [hp=90] PASS zombie cooldown: no second hit before 1000 ms [hp=90] PASS second hit after 1000 ms [hp=80] PASS no damage from outside 1.5 units [hp=80] PASS hit flash starts red then clears PASS hit flash clears after ~120 ms [base] PASS zombie falls on death and is removed after fading PASS crate blocks a rifle shot [hp=100] PASS wave 1 spawns 8 zombies and shows the WAVE 1 banner [n=8] PASS banner lasts 2 s PASS kills counted PASS next wave waits 5 s after last kill [wave=1] PASS wave 2 starts 5 s after last kill with 11 zombies [wave=2 n=11 waited=5017.0ms] PASS WAVE 2 banner visible PASS wave 2 zombies move at 2.15 PASS wave counts 5+3N: 8,11,14,17 PASS zombies spawn along the walls PASS 0 HP: game over overlay with YOU DIED, wave, kills PASS restart click is ignored within 600 ms"
+  - generic [ref=f1e9]: SELFTEST RUNNING…
