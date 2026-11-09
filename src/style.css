@@ -48,3 +48,52 @@ canvas { position: fixed; inset: 0; display: block; }
 .controls { list-style: none; color: #aaa; font-size: 16px; line-height: 1.7; }
 .controls b { color: #ddd; }
 @keyframes pulse { 50% { opacity: 0.45; } }
+
+/* ---------- touch / mobile ---------- */
+/* No page scroll, pinch zoom or double-tap zoom on touch screens (no effect on mouse). */
+html, body, canvas { touch-action: none; overscroll-behavior: none; -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent; -webkit-user-select: none; }
+
+body:not(.mobile) .touch-only, body.mobile .desktop-only { display: none; }
+body:not(.mobile) #touch-ui, body:not(.mobile) #rotate-hint { display: none !important; }
+
+#touch-ui { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+#joystick { position: absolute; width: 0; height: 0; }
+#joy-base { position: absolute; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25); }
+#joy-knob { position: absolute; left: -28px; top: -28px; width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6); }
+
+.touch-btn { position: absolute; border-radius: 50%; pointer-events: auto; touch-action: none;
+  display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold;
+  background: rgba(255, 255, 255, 0.16); border: 2px solid rgba(255, 255, 255, 0.55); text-shadow: 0 1px 3px #000; }
+.touch-btn.pressed { background: rgba(255, 255, 255, 0.4); }
+/* Fire 84 px: 32 px from the right edge, 110 px from the bottom edge. */
+#touch-fire { right: 32px; bottom: 110px; width: 84px; height: 84px; font-size: 17px; letter-spacing: 1px;
+  background: rgba(192, 57, 43, 0.45); border-color: rgba(255, 190, 180, 0.75); }
+#touch-fire.pressed { background: rgba(231, 76, 60, 0.75); }
+/* Reload 56 px: left of fire, 16 px gap (32 + 84 + 16 = 132), same centre line (110 + 14). */
+#touch-reload { right: 132px; bottom: 124px; width: 56px; height: 56px; font-size: 20px; }
+/* Switch 56 px: above fire, 16 px gap (110 + 84 + 16 = 210), same centre line (32 + 14). */
+#touch-switch { right: 46px; bottom: 210px; width: 56px; height: 56px; font-size: 24px; }
+
+#rotate-hint { display: none; position: fixed; left: 50%; top: 128px; transform: translateX(-50%); z-index: 6;
+  padding: 4px 12px; border-radius: 12px; background: rgba(0, 0, 0, 0.55); color: #f1c40f; font-size: 13px;
+  letter-spacing: 1px; white-space: nowrap; pointer-events: none; }
+@media (orientation: portrait) { body.mobile #rotate-hint { display: block; } }
+
+/* Mobile HUD: smaller, ammo moves to the top right so no button covers it. */
+body.mobile #stats { top: 10px; left: 14px; font-size: 18px; }
+body.mobile #kills { font-size: 15px; }
+body.mobile #health { left: 14px; bottom: 12px; width: 200px; }
+body.mobile .hp-row { font-size: 15px; margin-bottom: 2px; }
+body.mobile .bar { height: 14px; }
+body.mobile #ammo { top: 10px; right: 14px; bottom: auto; }
+body.mobile #reload-note { font-size: 13px; height: 16px; }
+body.mobile #weapon-name { font-size: 15px; }
+body.mobile #ammo-count { font-size: 30px; }
+body.mobile #slots { margin-top: 2px; font-size: 12px; }
+body.mobile #banner { font-size: clamp(40px, 11vw, 84px); letter-spacing: 6px; }
+body.mobile .overlay h1 { font-size: clamp(40px, 9vw, 96px); margin-bottom: 8px; }
+body.mobile .hint { font-size: 22px; margin: 8px 0 14px; }
+body.mobile .controls { font-size: 14px; line-height: 1.5; padding: 0 16px; }
