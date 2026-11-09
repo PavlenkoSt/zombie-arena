@@ -87,6 +87,8 @@ export async function run(game) {
     const reload = $('touch-reload');
     const sw = $('touch-switch');
     check('fire, reload and switch buttons exist', !!fire && !!reload && !!sw);
+    const jump = $('touch-jump');
+    check('JUMP button exists, round, same touch-btn style', !!jump && jump.classList.contains('touch-btn') && circle(jump) && jump.textContent === 'JUMP');
 
     // ---------- start without pointer lock ----------
     {
@@ -281,6 +283,47 @@ export async function run(game) {
       }
     }
 
+    // ---------- jump button ----------
+    if (canTouch && jump) {
+      const p = fresh(0);
+      const eye = game.camera.position.y;
+      const [jx, jy] = center(jump);
+      const ev = down(8, jx, jy);
+      check('jump button touch is not scrolled / zoomed (preventDefault)', ev.defaultPrevented);
+      check('jump button shows pressed while held', jump.classList.contains('pressed'));
+      up(8, jx, jy);
+      check('jump button press state clears on release', !jump.classList.contains('pressed'));
+      let peak = 0;
+      let frames = 0;
+      while (frames < 120) {
+        step(1);
+        frames++;
+        peak = Math.max(peak, p.jumpY);
+        if (frames === 10) {
+          const vy = p.vy;
+          down(9, jx, jy); // second tap in the air
+          up(9, jx, jy);
+          check('second JUMP tap in the air does nothing (no double jump)', p.vy === vy && !p.onGround, `vy=${vy.toFixed(3)} -> ${p.vy.toFixed(3)}`);
+        }
+        if (p.onGround) break;
+      }
+      check('JUMP tap: peak 1.2 +- 0.1 above eye height, lands at eye height within 0.8 s', Math.abs(peak - 1.2) <= 0.1 && p.onGround && game.camera.position.y === eye && frames * 1000 / 60 <= 800, `peak=+${peak.toFixed(3)} air=${(frames * 1000 / 60).toFixed(0)}ms`);
+      // Stick moves the player in the air.
+      const sx = W * 0.2;
+      const sy = H * 0.6;
+      down(1, sx, sy);
+      move(1, sx, sy - 30);
+      down(8, jx, jy);
+      up(8, jx, jy);
+      const z0 = p.z;
+      step(30);
+      check('joystick still moves the player in the air', !p.onGround && near(z0 - p.z, 1.25, 0.05), `dz=${(z0 - p.z).toFixed(3)}`);
+      up(1, sx, sy - 30);
+      step(60);
+    } else if (!jump) {
+      check('jump button checks need #touch-jump', false);
+    }
+
     // ---------- desktop handlers do nothing in mobile mode ----------
     {
       fresh(0);
@@ -327,7 +370,11 @@ export async function run(game) {
       check(`${w}x${h}: fire 84 px circle, 32 px from right, 110 px from bottom`, fr.width === 84 && fr.height === 84 && near(w - fr.right, 32, 0.5) && near(h - fr.bottom, 110, 0.5) && r.win.getComputedStyle(d.getElementById('touch-fire')).borderRadius === '50%', `${fr.width}x${fr.height} right=${w - fr.right} bottom=${h - fr.bottom}`);
       check(`${w}x${h}: reload 56 px circle, 16 px left of fire, same centre line`, rr.width === 56 && rr.height === 56 && near(fr.left - rr.right, 16, 0.5) && near(rr.top + 28, fr.top + 42, 0.5), `gap=${fr.left - rr.right}`);
       check(`${w}x${h}: switch 56 px circle, 16 px above fire, same centre line`, sr.width === 56 && sr.height === 56 && near(fr.top - sr.bottom, 16, 0.5) && near(sr.left + 28, fr.left + 42, 0.5), `gap=${fr.top - sr.bottom}`);
-      const buttons = [fr, rr, sr];
+      const jr = d.getElementById('touch-jump') ? g('touch-jump') : null;
+      const ovl = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+      check(`${w}x${h}: JUMP at least 56x56, round, right side, near fire`, !!jr && jr.width >= 56 && jr.height >= 56 && r.win.getComputedStyle(d.getElementById('touch-jump')).borderRadius === '50%' && jr.left > w / 2 && Math.hypot(jr.left + jr.width / 2 - (fr.left + 42), jr.top + jr.height / 2 - (fr.top + 42)) < 120, jr ? `${jr.width}x${jr.height} at ${jr.left},${jr.top}` : 'missing');
+      check(`${w}x${h}: JUMP does not overlap fire, reload or switch`, !!jr && [fr, rr, sr].every((b) => !ovl(jr, b)));
+      const buttons = jr ? [fr, rr, sr, jr] : [fr, rr, sr];
       check(`${w}x${h}: all buttons on screen and at least 44 px`, buttons.every((b) => b.left >= 0 && b.top >= 0 && b.right <= w && b.bottom <= h && b.width >= 44 && b.height >= 44));
       const hudIds = ['wave', 'kills', 'hp-text', 'health', 'weapon-name', 'ammo-count', 'reload-note'];
       const overlap = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
@@ -335,7 +382,7 @@ export async function run(game) {
       for (const id of hudIds) {
         const hr = g(id);
         if (hr.left < 0 || hr.top < 0 || hr.right > w || hr.bottom > h) hits.push(`${id} off screen`);
-        buttons.forEach((b, i) => overlap(hr, b) && hits.push(`${id} under ${['fire', 'reload', 'switch'][i]}`));
+        buttons.forEach((b, i) => overlap(hr, b) && hits.push(`${id} under ${['fire', 'reload', 'switch', 'jump'][i]}`));
       }
       check(`${w}x${h}: no button covers health, wave or ammo text; HUD on screen`, hits.length === 0, hits.join(', '));
       const hint = d.getElementById('rotate-hint');

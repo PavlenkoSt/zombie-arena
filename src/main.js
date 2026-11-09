@@ -17,7 +17,7 @@ let mobile = detectMobile(params, window);
 if (!params.has('mobile')) {
   // Test pages pick their own mode: mobile-* shots and ?selftest=mobile use touch, the rest desktop.
   if (shot.startsWith('mobile-') || params.get('selftest') === 'mobile') mobile = true;
-  else if (shot.startsWith('desktop-') || params.has('selftest')) mobile = false;
+  else if (shot.startsWith('desktop-') || shot.startsWith('jump-') || params.has('selftest')) mobile = false;
 }
 
 const game = new Game(document.getElementById('game'), { mobile });

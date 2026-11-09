@@ -1,7 +1,7 @@
 import { WEAPONS } from './config.js';
 
 // Touch controls for phones and tablets: floating joystick (left half), drag to look
-// (right half), hold-to-fire, reload and weapon switch buttons.
+// (right half), hold-to-fire, reload, weapon switch and jump buttons.
 
 export const TOUCH = {
   baseSize: 120, // joystick base diameter, px
@@ -70,13 +70,19 @@ export class TouchControls {
     this.fireBtn = el('div', 'touch-fire', this.root, 'FIRE');
     this.reloadBtn = el('div', 'touch-reload', this.root, 'R');
     this.switchBtn = el('div', 'touch-switch', this.root, '⇄');
+    this.jumpBtn = el('div', 'touch-jump', this.root, 'JUMP');
     this.fireBtn.dataset.touch = 'fire';
     this.reloadBtn.dataset.touch = 'reload';
     this.switchBtn.dataset.touch = 'switch';
-    for (const b of [this.fireBtn, this.reloadBtn, this.switchBtn]) b.classList.add('touch-btn');
+    this.jumpBtn.dataset.touch = 'jump';
+    for (const b of this.buttons) b.classList.add('touch-btn');
     this.hint = el('div', 'rotate-hint', document.body, 'Rotate for best play');
     this.hideStick();
     this.bind();
+  }
+
+  get buttons() {
+    return [this.fireBtn, this.reloadBtn, this.switchBtn, this.jumpBtn];
   }
 
   get stickActive() {
@@ -116,7 +122,7 @@ export class TouchControls {
 
     // A plain click with no press before it (keyboard, accessibility tools, scripted clicks)
     // acts as one tap. After a real press the click is ignored, so a tap never acts twice.
-    for (const b of [this.fireBtn, this.reloadBtn, this.switchBtn]) {
+    for (const b of this.buttons) {
       b.addEventListener('click', () => {
         const role = b.dataset.touch;
         if (this.game.state !== 'playing' || performance.now() - (this.lastPress[role] || -1e9) < 1000) return;
@@ -125,12 +131,13 @@ export class TouchControls {
     }
   }
 
-  // One tap on a button: fire = one press (click rules), reload, or next weapon.
+  // One tap on a button: fire = one press (click rules), reload, next weapon, or jump.
   tap(role) {
     const game = this.game;
     if (role === 'fire') game.input.pressedAt = game.time;
     else if (role === 'reload') game.reload();
     else if (role === 'switch') game.selectWeapon((game.weaponIndex + 1) % WEAPONS.length);
+    else if (role === 'jump') game.jump();
   }
 
   begin(key, x, y, target) {
@@ -160,6 +167,9 @@ export class TouchControls {
     } else if (role === 'switch') {
       this.switchBtn.classList.add('pressed');
       this.tap('switch');
+    } else if (role === 'jump') {
+      this.jumpBtn.classList.add('pressed');
+      this.tap('jump');
     }
   }
 
@@ -193,6 +203,8 @@ export class TouchControls {
       this.reloadBtn.classList.remove('pressed');
     } else if (c.role === 'switch') {
       this.switchBtn.classList.remove('pressed');
+    } else if (c.role === 'jump') {
+      this.jumpBtn.classList.remove('pressed');
     }
   }
 

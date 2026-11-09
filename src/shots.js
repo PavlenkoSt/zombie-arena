@@ -1,4 +1,5 @@
 import { mulberry32 } from './rng.js';
+import { stepJump } from './rules.js';
 
 // Fixed scenes for screenshots: open /?shot=<name>. The scene is posed once and then
 // time stands still, so the picture does not change while it is taken.
@@ -70,6 +71,21 @@ export function setup(game, name) {
     game.touch.begin('shot-stick', x, y, game.canvas);
     game.touch.move('shot-stick', x + 26, y - 38);
     game.touch.begin('shot-fire', 0, 0, game.touch.fireBtn);
+    return;
+  }
+
+  // Touch mode with the JUMP button under FIRE (open at 844x390).
+  if (name === 'mobile-jump-button') {
+    rifleScene(game);
+    return;
+  }
+
+  // Desktop view at the top of a jump: the real jump arc, stepped to its peak.
+  if (name === 'jump-midair') {
+    rifleScene(game);
+    const p = game.player;
+    game.jump();
+    while (p.vy > 0) stepJump(p, 1 / 600);
     return;
   }
 

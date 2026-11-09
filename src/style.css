@@ -76,6 +76,8 @@ body:not(.mobile) #touch-ui, body:not(.mobile) #rotate-hint { display: none !imp
 #touch-reload { right: 132px; bottom: 124px; width: 56px; height: 56px; font-size: 20px; }
 /* Switch 56 px: above fire, 16 px gap (110 + 84 + 16 = 210), same centre line (32 + 14). */
 #touch-switch { right: 46px; bottom: 210px; width: 56px; height: 56px; font-size: 24px; }
+/* Jump 64 px: below fire, 16 px gap (110 - 16 - 64 = 30), same centre line (32 + 42 - 32 = 42). */
+#touch-jump { right: 42px; bottom: 30px; width: 64px; height: 64px; font-size: 14px; letter-spacing: 1px; }
 
 #rotate-hint { display: none; position: fixed; left: 50%; top: 128px; transform: translateX(-50%); z-index: 6;
   padding: 4px 12px; border-radius: 12px; background: rgba(0, 0, 0, 0.55); color: #f1c40f; font-size: 13px;
