@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>viewport</title>
+  <style>
+    html, body { margin: 0; background: #0b0c10; color: #9aa; font: 13px/1.4 monospace; }
+    #label { padding: 6px 10px; }
+    iframe { display: block; margin: 0 10px 10px; border: 0; outline: 1px solid #445; background: #000;
+      transform-origin: 0 0; }
+  </style>
+</head>
+<body>
+  <!-- Test helper: shows a page of this project at an exact phone size.
+       src/viewport.html?w=844&h=390&page=%2F%3Fshot%3Dmobile-landscape -->
+  <div id="label"></div>
+  <iframe id="frame" title="game"></iframe>
+  <script>
+    const q = new URLSearchParams(location.search);
+    const w = Math.min(4000, Math.max(100, parseInt(q.get('w'), 10) || 844));
+    const h = Math.min(4000, Math.max(100, parseInt(q.get('h'), 10) || 390));
+    // Same-origin paths only.
+    let page = q.get('page') || '/?shot=mobile-landscape';
+    if (!page.startsWith('/') || page.startsWith('//')) page = '/?shot=mobile-landscape';
+    const f = document.getElementById('frame');
+    f.style.width = w + 'px';
+    f.style.height = h + 'px';
+    f.src = page;
+    // Scale the frame down to fit the window; the page inside still has a w x h viewport.
+    const fit = () => {
+      const k = Math.min(1, (innerWidth - 20) / w, (innerHeight - 40) / h);
+      f.style.transform = `scale(${k})`;
+      document.getElementById('label').textContent =
+        `${w} x ${h}  ${page}` + (k < 1 ? `  (shown at ${Math.round(k * 100)} %)` : '');
+    };
+    addEventListener('resize', fit);
+    fit();
+    document.title = `viewport ${w}x${h}`;
+  </script>
+</body>
+</html>

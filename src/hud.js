@@ -24,6 +24,13 @@ export class Hud {
     this.goKills = $('go-kills');
     this.cache = {};
     this.bannerVisible = false;
+    this.playHint = 'Click to play';
+  }
+
+  // Touch wording on the start and game-over screens.
+  setMobile() {
+    this.playHint = 'Tap to play';
+    this.gameOver.querySelector('.hint').textContent = 'Tap to restart';
   }
 
   set(key, value, apply) {
@@ -85,7 +92,7 @@ export class Hud {
     c.classList.add(kill ? 'kill' : 'hit');
   }
 
-  showStart(visible, hint = 'Click to play') {
+  showStart(visible, hint = this.playHint) {
     this.startHint.textContent = hint;
     this.startScreen.classList.toggle('hidden', !visible);
   }

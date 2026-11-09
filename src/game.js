@@ -6,12 +6,13 @@ import { WeaponView } from './weaponView.js';
 import { WeaponState } from './weaponState.js';
 import { Hud } from './hud.js';
 import { zombieCountForWave, zombieSpeedForWave } from './rules.js';
+import { TouchControls } from './touchControls.js';
 
 const FOV = 75;
 const MAX_DT = 0.05;
 
 export class Game {
-  constructor(canvas) {
+  constructor(canvas, { mobile = false } = {}) {
     this.canvas = canvas;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -28,7 +29,10 @@ export class Game {
     this.view = new WeaponView(this.weaponScene);
 
     this.hud = new Hud();
-    this.input = { keys: new Set(), held: false, pressedAt: -Infinity };
+    // stick: analog move from the touch joystick, or null ({ x, y, amount, sprint })
+    this.input = { keys: new Set(), held: false, pressedAt: -Infinity, stick: null };
+    this.mobile = mobile; // touch controls, no pointer lock
+    this.touch = null;
     this.rand = Math.random;
     this.manual = false; // true: the loop only draws (self-test and screenshot scenes drive update())
     this.autoWaves = true;
@@ -39,6 +43,12 @@ export class Game {
     this.lastWheel = 0;
     this.onShot = null; // optional hook: (weaponDef, time) => void
     this.shots = 0;
+
+    if (mobile) {
+      document.body.classList.add('mobile');
+      this.hud.setMobile();
+      this.touch = new TouchControls(this);
+    }
 
     this.resetWorld();
     this.bindEvents();
@@ -63,7 +73,9 @@ export class Game {
     this.weapons = WEAPONS.map((d) => new WeaponState(d));
     this.weaponIndex = 0;
     this.view.setWeapon(0);
+    if (this.touch) this.touch.releaseAll();
     this.input.held = false;
+    this.input.stick = null;
     this.input.pressedAt = -Infinity;
     this.input.keys.clear();
     this.zombies.clear();
@@ -89,6 +101,7 @@ export class Game {
     this.hud.showStart(false);
     this.hud.showGameOver(false);
     this.hud.show(true);
+    if (this.touch) this.touch.setVisible(true);
     this.startWave(wave);
     this.updateVisuals(0);
     if (lock) this.requestLock();
@@ -115,11 +128,13 @@ export class Game {
     this.input.keys.clear();
     this.hadLock = false;
     if (document.pointerLockElement) document.exitPointerLock();
+    if (this.touch) this.touch.setVisible(false);
     this.hud.hideBanner();
     this.hud.showGameOver(true, this.wave, this.kills);
   }
 
   requestLock() {
+    if (this.mobile) return; // touch play: no pointer lock
     try {
       const p = this.canvas.requestPointerLock();
       if (p && p.catch) p.catch(() => {});
@@ -170,7 +185,7 @@ export class Game {
     document.addEventListener('keyup', (e) => input.keys.delete(e.code));
 
     document.addEventListener('mousedown', (e) => {
-      if (e.button !== 0 || this.state !== 'playing') return;
+      if (e.button !== 0 || this.state !== 'playing' || this.mobile) return; // mobile fires with the touch button
       input.held = true;
       input.pressedAt = this.time;
     });
@@ -182,9 +197,7 @@ export class Game {
     document.addEventListener('mousemove', (e) => {
       if (this.state !== 'playing' || document.pointerLockElement !== this.canvas) return;
       if (Math.abs(e.movementX) > 300 || Math.abs(e.movementY) > 300) return; // browser glitch
-      this.player.yaw -= e.movementX * PLAYER.mouseSensitivity;
-      this.player.pitch -= e.movementY * PLAYER.mouseSensitivity;
-      this.player.pitch = Math.max(-1.45, Math.min(1.45, this.player.pitch));
+      this.turn(-e.movementX * PLAYER.mouseSensitivity, -e.movementY * PLAYER.mouseSensitivity);
     });
 
     document.addEventListener(
@@ -216,6 +229,13 @@ export class Game {
     this.hud.gameOver.addEventListener('click', () => {
       if (this.state === 'dead' && performance.now() - this.diedAtReal > 600) this.start();
     });
+  }
+
+  // Look: mouse and touch both turn the view here. Same pitch clamp for both.
+  turn(dYaw, dPitch) {
+    this.player.yaw += dYaw;
+    this.player.pitch += dPitch;
+    this.player.pitch = Math.max(-1.45, Math.min(1.45, this.player.pitch));
   }
 
   selectWeapon(i) {
@@ -269,11 +289,19 @@ export class Game {
     if (k.has('KeyS') || k.has('ArrowDown')) f -= 1;
     if (k.has('KeyD') || k.has('ArrowRight')) r += 1;
     if (k.has('KeyA') || k.has('ArrowLeft')) r -= 1;
+    let sprint = k.has('ShiftLeft') || k.has('ShiftRight');
+    let scale = 1; // keys: full speed; touch stick: analog
+    const stick = this.input.stick;
+    if (f === 0 && r === 0 && stick) {
+      f = stick.y;
+      r = stick.x;
+      sprint = stick.sprint;
+      scale = sprint ? 1 : stick.amount;
+    }
     const len = Math.hypot(f, r);
     p.moveAmount = 0;
     if (len > 0) {
-      const sprint = k.has('ShiftLeft') || k.has('ShiftRight');
-      const speed = sprint ? PLAYER.sprintSpeed : PLAYER.walkSpeed;
+      const speed = (sprint ? PLAYER.sprintSpeed : PLAYER.walkSpeed) * scale;
       const sin = Math.sin(p.yaw);
       const cos = Math.cos(p.yaw);
       const fx = -sin;
@@ -282,7 +310,7 @@ export class Game {
       const rz = -sin;
       p.x += ((fx * f + rx * r) / len) * speed * dt;
       p.z += ((fz * f + rz * r) / len) * speed * dt;
-      p.moveAmount = sprint ? 1.6 : 1;
+      p.moveAmount = (sprint ? 1.6 : 1) * scale;
     }
     this.arena.resolve(p, PLAYER.radius);
   }

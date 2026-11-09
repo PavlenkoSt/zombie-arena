@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>ZOMBIE ARENA</title>
   <link rel="stylesheet" href="src/style.css">
   <script type="importmap">
@@ -39,13 +39,19 @@
   <div id="start-screen" class="overlay">
     <h1>ZOMBIE ARENA</h1>
     <p id="start-hint" class="hint">Click to play</p>
-    <ul class="controls">
+    <ul class="controls desktop-only">
       <li><b>WASD</b> move</li>
       <li><b>Shift</b> sprint</li>
       <li><b>Mouse</b> look</li>
       <li><b>Left click</b> attack</li>
       <li><b>1 / 2 / 3</b> or <b>wheel</b> switch weapon</li>
       <li><b>R</b> reload</li>
+    </ul>
+    <ul class="controls touch-only">
+      <li><b>Left thumb</b> move, push to the edge to sprint</li>
+      <li><b>Right thumb</b> look</li>
+      <li><b>FIRE</b> hold to attack, drag to aim</li>
+      <li><b>⇄</b> switch weapon &nbsp; <b>R</b> reload</li>
     </ul>
   </div>
 
