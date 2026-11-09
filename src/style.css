@@ -42,6 +42,9 @@ canvas { position: fixed; inset: 0; display: block; }
   background: rgba(10, 12, 16, 0.55); cursor: pointer; text-align: center; }
 .overlay h1 { font-family: Impact, "Arial Black", sans-serif; font-size: clamp(48px, 10vw, 120px); letter-spacing: 8px; color: #d8d8d8;
   text-shadow: 0 0 24px #000, 0 6px 0 #7a1f16; margin-bottom: 18px; }
+.overlay h1.logo-title { font-size: 0; letter-spacing: 0; text-shadow: none; margin-bottom: 4px; line-height: 0; }
+#logo { display: block; width: 420px; max-width: 80vw; height: auto; filter: drop-shadow(0 0 18px rgba(0, 0, 0, 0.8)); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .overlay h1.dead { color: #c0392b; text-shadow: 0 0 24px #000, 0 6px 0 #3c0d08; }
 .hint { font-size: 28px; letter-spacing: 3px; color: #f1c40f; margin: 14px 0 24px; animation: pulse 1.6s infinite; }
 .stat { font-size: 26px; margin: 4px 0; }
@@ -97,5 +100,6 @@ body.mobile #ammo-count { font-size: 30px; }
 body.mobile #slots { margin-top: 2px; font-size: 12px; }
 body.mobile #banner { font-size: clamp(40px, 11vw, 84px); letter-spacing: 6px; }
 body.mobile .overlay h1 { font-size: clamp(40px, 9vw, 96px); margin-bottom: 8px; }
+body.mobile .overlay h1.logo-title { font-size: 0; margin-bottom: 0; }
 body.mobile .hint { font-size: 22px; margin: 8px 0 14px; }
 body.mobile .controls { font-size: 14px; line-height: 1.5; padding: 0 16px; }

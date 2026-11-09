@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="t">
+  <title id="t">ZOMBIE ARENA</title>
+  <!-- ZOMBIE ARENA icon: the skull mark on a dark rounded square (radius 96). -->
+  <rect width="512" height="512" rx="96" ry="96" fill="#111"/>
+  <!-- green slime band and drips behind the skull -->
+  <path fill="#7CFC00" opacity="0.9" d="M0 96 A96 96 0 0 1 96 0 H416 A96 96 0 0 1 512 96 V120 H0 Z"/>
+  <path fill="#7CFC00" opacity="0.9" d="M60 118 V150 a12 12 0 0 0 24 0 V118 Z M392 118 V178 a14 14 0 0 0 28 0 V118 Z M440 118 V140 a10 10 0 0 0 20 0 V118 Z"/>
+  <g transform="translate(86 92) scale(3.4)">
+    <path fill="#000" opacity="0.6" transform="translate(3 4)" d="M30 2 H70 L98 30 V66 L84 76 V98 H16 V76 L2 66 V30 Z"/>
+    <g id="skull">
+      <path fill="#e9e4cf" stroke="#0b0f0a" stroke-width="6" stroke-linejoin="round"
+        d="M30 2 H70 L98 30 V66 L84 76 V98 H16 V76 L2 66 V30 Z"/>
+      <path fill="none" stroke="#0b0f0a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" d="M58 3 L53 14 L61 21 L55 32"/>
+      <path fill="#0b0f0a" d="M13 40 L45 49 L42 65 L18 63 Z M87 40 L55 49 L58 65 L82 63 Z M50 66 L57 79 H43 Z"/>
+      <path fill="#7CFC00" d="M25 50 h10 v8 h-10 Z M65 50 h10 v8 h-10 Z"/>
+      <path fill="none" stroke="#0b0f0a" stroke-width="4" d="M16 84 H84 M32 77 V98 M50 77 V98 M68 77 V98"/>
+    </g>
+  </g>
+</svg>

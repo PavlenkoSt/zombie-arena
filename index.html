@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>ZOMBIE ARENA</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="src/style.css">
   <script type="importmap">
     { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
@@ -37,7 +38,10 @@
   </div>
 
   <div id="start-screen" class="overlay">
-    <h1>ZOMBIE ARENA</h1>
+    <h1 class="logo-title">
+      <img id="logo" src="assets/logo.svg" alt="" width="420" height="210">
+      <span class="sr-only">ZOMBIE ARENA</span>
+    </h1>
     <p id="start-hint" class="hint">Click to play</p>
     <ul class="controls desktop-only">
       <li><b>WASD</b> move</li>
