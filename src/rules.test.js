@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { zombieCountForWave, zombieSpeedForWave, hitsToKill } from './rules.js';
-import { WEAPONS, ZOMBIE } from './config.js';
+import { zombieCountForWave, zombieSpeedForWave, hitsToKill, tryJump, stepJump } from './rules.js';
+import { WEAPONS, ZOMBIE, JUMP } from './config.js';
 import { WeaponState } from './weaponState.js';
 
 const byId = (id) => WEAPONS.find((w) => w.id === id);
@@ -190,3 +190,65 @@ for (const [id, interval] of [['rifle', 100], ['pistol', 250], ['knife', 500]]) 
     }
   });
 }
+
+// ---------- jump ----------
+// Body: jumpY = height above normal eye height, vy = vertical speed, onGround.
+const ground = () => ({ jumpY: 0, vy: 0, onGround: true });
+
+// Steps the body until it lands (or 2 s) and returns the peak height and the air time.
+function flight(body, steps) {
+  let peak = body.jumpY;
+  let t = 0;
+  for (let i = 0; !body.onGround && t < 2; i++) {
+    const dt = steps[i % steps.length];
+    stepJump(body, dt);
+    t += dt;
+    peak = Math.max(peak, body.jumpY);
+  }
+  return { peak, airTime: t };
+}
+
+test('jump numbers live in config: gravity 20, peak 1.2, air time about 0.7 s', () => {
+  assert.equal(JUMP.gravity, 20);
+  assert.equal(JUMP.peakHeight, 1.2);
+  const airTime = (2 * JUMP.velocity) / JUMP.gravity;
+  assert.ok(Math.abs(airTime - 0.7) < 0.05, `air time ${airTime}`);
+});
+
+for (const steps of [[1 / 60], [1 / 144], [1 / 30], [0.016, 0.033, 0.007, 0.05]]) {
+  test(`jump peak 1.2 +- 0.1 and landing at eye height within 0.8 s, frames ${steps.map((s) => (s * 1000).toFixed(1)).join('/')} ms`, () => {
+    const body = ground();
+    assert.equal(tryJump(body), true);
+    assert.equal(body.onGround, false);
+    const { peak, airTime } = flight(body, steps);
+    assert.ok(Math.abs(peak - 1.2) <= 0.1, `peak ${peak}`);
+    assert.ok(airTime <= 0.8 && airTime >= 0.6, `air time ${airTime}`);
+    assert.equal(body.onGround, true);
+    assert.equal(body.jumpY, 0, 'lands exactly at normal eye height');
+    assert.equal(body.vy, 0);
+  });
+}
+
+test('no double jump: a second jump in the air does nothing', () => {
+  const body = ground();
+  assert.equal(tryJump(body), true);
+  for (let i = 0; i < 10; i++) stepJump(body, 1 / 60);
+  const vy = body.vy;
+  const y = body.jumpY;
+  assert.equal(tryJump(body), false);
+  assert.equal(body.vy, vy);
+  assert.equal(body.jumpY, y);
+  const { peak } = flight(body, [1 / 60]);
+  assert.ok(peak <= 1.3, `peak ${peak}`);
+  assert.equal(body.jumpY, 0);
+});
+
+test('jump works again after landing; standing still on the ground stays at 0', () => {
+  const body = ground();
+  stepJump(body, 1 / 60);
+  assert.equal(body.jumpY, 0);
+  assert.equal(body.onGround, true);
+  tryJump(body);
+  flight(body, [1 / 60]);
+  assert.equal(tryJump(body), true);
+});

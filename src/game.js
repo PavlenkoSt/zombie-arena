@@ -5,7 +5,7 @@ import { ZombieManager } from './zombies.js';
 import { WeaponView } from './weaponView.js';
 import { WeaponState } from './weaponState.js';
 import { Hud } from './hud.js';
-import { zombieCountForWave, zombieSpeedForWave } from './rules.js';
+import { zombieCountForWave, zombieSpeedForWave, tryJump, stepJump } from './rules.js';
 import { TouchControls } from './touchControls.js';
 
 const FOV = 75;
@@ -61,7 +61,8 @@ export class Game {
   // ---------- state ----------
 
   resetWorld() {
-    this.player = { x: 0, z: 0, yaw: 0, pitch: 0, hp: PLAYER.maxHp, moveAmount: 0 };
+    // jumpY: eye height above PLAYER.eyeHeight while in the air (0 on the floor).
+    this.player = { x: 0, z: 0, yaw: 0, pitch: 0, hp: PLAYER.maxHp, moveAmount: 0, jumpY: 0, vy: 0, onGround: true };
     this.clockMs = 0; // exact sum of frame steps
     this.time = 0; // game time in integer ms, used by all game rules
     this.kills = 0;
@@ -181,6 +182,10 @@ export class Game {
       else if (e.code === 'Digit2' || e.code === 'Numpad2') this.selectWeapon(1);
       else if (e.code === 'Digit3' || e.code === 'Numpad3') this.selectWeapon(2);
       else if (e.code === 'KeyR') this.reload();
+      else if (e.code === 'Space') {
+        e.preventDefault(); // no page scroll, no click on a focused element
+        this.jump();
+      }
     });
     document.addEventListener('keyup', (e) => input.keys.delete(e.code));
 
@@ -249,6 +254,12 @@ export class Game {
     this.weapon.startReload(this.time);
   }
 
+  // Space or the touch JUMP button. Only from the floor (no double jump).
+  jump() {
+    if (this.state !== 'playing') return false;
+    return tryJump(this.player);
+  }
+
   resize() {
     const w = window.innerWidth;
     const h = window.innerHeight;
@@ -313,6 +324,7 @@ export class Game {
       p.moveAmount = (sprint ? 1.6 : 1) * scale;
     }
     this.arena.resolve(p, PLAYER.radius);
+    stepJump(p, dt);
   }
 
   fire() {
@@ -331,7 +343,7 @@ export class Game {
       const dx = -Math.sin(p.yaw) * cp;
       const dy = Math.sin(p.pitch);
       const dz = -Math.cos(p.yaw) * cp;
-      target = this.zombies.raycast(p.x, PLAYER.eyeHeight, p.z, dx, dy, dz, 100, this.arena);
+      target = this.zombies.raycast(p.x, PLAYER.eyeHeight + p.jumpY, p.z, dx, dy, dz, 100, this.arena);
     }
     if (!target) return;
     const killed = this.zombies.damage(target.zombie, def.damage, this.time);
@@ -358,8 +370,8 @@ export class Game {
       cam.lookAt(0, 1.2, 0);
       cam.rotation.order = 'YXZ';
     } else {
-      const bob = Math.sin(this.view.bob) * 0.025 * p.moveAmount;
-      cam.position.set(p.x, PLAYER.eyeHeight + bob, p.z);
+      const bob = p.onGround ? Math.sin(this.view.bob) * 0.025 * p.moveAmount : 0; // no head bob in the air
+      cam.position.set(p.x, PLAYER.eyeHeight + p.jumpY + bob, p.z);
       cam.rotation.set(p.pitch, p.yaw, 0);
     }
 

@@ -29,6 +29,16 @@ export const PLAYER = {
   mouseSensitivity: 0.0022,
 };
 
+// Jump: the eye rises peakHeight above PLAYER.eyeHeight and falls back with gravity.
+// velocity = sqrt(2 * gravity * peakHeight) = 6.93 units/s; air time = 2 * velocity / gravity = 0.69 s.
+const JUMP_PEAK = 1.2; // units above normal eye height
+const JUMP_GRAVITY = 20; // units/s^2
+export const JUMP = {
+  peakHeight: JUMP_PEAK,
+  gravity: JUMP_GRAVITY,
+  velocity: Math.sqrt(2 * JUMP_GRAVITY * JUMP_PEAK),
+};
+
 export const ZOMBIE = {
   hp: 100,
   baseSpeed: 2.0,

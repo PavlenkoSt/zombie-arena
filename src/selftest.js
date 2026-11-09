@@ -1,6 +1,6 @@
 import { zombieCountForWave, zombieSpeedForWave } from './rules.js';
 import { mulberry32 } from './rng.js';
-import { WEAPONS, CRATES } from './config.js';
+import { WEAPONS, CRATES, PLAYER } from './config.js';
 
 // Browser self-test: drives the real game code with fixed time steps.
 // Open /?selftest and read the result list.
@@ -251,6 +251,77 @@ export async function run(game) {
     const inside = p.x > box.minX && p.x < box.maxX && p.z > box.minZ && p.z < box.maxZ;
     check('player cannot walk into a crate', !inside && p.z >= box.maxZ + 0.39, `z=${p.z.toFixed(3)} crateEdge=${box.maxZ}`);
     game.input.keys.clear();
+  }
+
+  // --- jump (real Space key events, height read from the camera) ---
+  {
+    const p = fresh(0);
+    const eye = PLAYER.eyeHeight;
+    const key = (type) => document.dispatchEvent(new KeyboardEvent(type, { code: 'Space', key: ' ', bubbles: true, cancelable: true }));
+    const camY = () => game.camera.position.y;
+    step(1);
+    check('jump: camera at normal eye height before the jump', camY() === eye, `y=${camY()}`);
+    key('keydown');
+    key('keyup');
+    let peak = camY();
+    let peakAt = 0;
+    let frames = 0;
+    let secondAt = -1;
+    let afterSecond = null;
+    while (frames < 120) {
+      step(1);
+      frames++;
+      if (camY() > peak) {
+        peak = camY();
+        peakAt = frames;
+      }
+      if (frames === 10) {
+        // Second press in the air, while rising: no double jump.
+        const vy = p.vy;
+        key('keydown');
+        key('keyup');
+        secondAt = frames;
+        afterSecond = { vy, vyNow: p.vy };
+      }
+      if (frames > 1 && camY() === eye) break;
+    }
+    const rise = peak - eye;
+    check('jump: Space rises 1.2 +- 0.1 above eye height', Math.abs(rise - 1.2) <= 0.1, `peak=+${rise.toFixed(3)} at ${((peakAt * 1000) / 60).toFixed(0)}ms`);
+    const airMs = (frames * 1000) / 60;
+    check('jump: lands back at normal eye height within 0.8 s', camY() === eye && p.jumpY === 0 && p.onGround && airMs <= 800, `y=${camY()} air=${airMs.toFixed(0)}ms`);
+    check('jump: second Space in the air does nothing (no double jump)', secondAt === 10 && afterSecond && afterSecond.vyNow === afterSecond.vy && rise <= 1.3, afterSecond ? `vy ${afterSecond.vy.toFixed(3)} -> ${afterSecond.vyNow.toFixed(3)}` : 'no second press');
+    step(5);
+    check('jump: stays on the floor after landing', camY() === eye && p.onGround, `y=${camY()}`);
+    key('keydown');
+    key('keyup');
+    step(1);
+    check('jump: Space jumps again after landing', camY() > eye, `y=${camY().toFixed(3)}`);
+  }
+  {
+    // Movement and aim keep working in the air.
+    const p = fresh(0);
+    game.input.keys.add('KeyW');
+    game.jump();
+    step(30);
+    const inAir = !p.onGround && p.jumpY > 0.3;
+    check('jump: walk forward keeps 5 units/s in the air', inAir && near(-p.z, 2.5, 0.05), `dz=${(-p.z).toFixed(3)} y=+${p.jumpY.toFixed(2)}`);
+    const yaw0 = p.yaw;
+    game.turn(-0.2, 0.1);
+    game.updateVisuals(0);
+    check('jump: aim turns in the air', near(p.yaw - yaw0, -0.2, 1e-9) && near(game.camera.rotation.y, p.yaw, 1e-9) && !p.onGround);
+    game.input.keys.clear();
+    step(60);
+    check('jump: lands at eye height after moving in the air', p.onGround && game.camera.position.y === PLAYER.eyeHeight);
+  }
+  {
+    // Space does nothing outside play.
+    fresh(0);
+    game.state = 'paused';
+    document.dispatchEvent(new KeyboardEvent('keydown', { code: 'Space', key: ' ', bubbles: true }));
+    document.dispatchEvent(new KeyboardEvent('keyup', { code: 'Space', key: ' ', bubbles: true }));
+    const grounded = game.player.onGround;
+    game.state = 'playing';
+    check('jump: no jump while paused', grounded === true);
   }
 
   // --- zombies ---
