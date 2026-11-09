@@ -52,16 +52,38 @@ export function setup(game, name) {
     return;
   }
 
-  // The favicon at 128x128, and the logo at 128 px wide (legibility check), on a plain page.
-  if (name === 'icon' || name === 'logo-128') {
-    const icon = name === 'icon';
+  // Asset pages on a plain background: icon (128x128), logo-128 (logo at 128x64, legibility check)
+  // and favicon-tab (the favicon at 32x32 in a browser-tab mock-up). A caption prints the measured CSS size.
+  if (name === 'icon' || name === 'logo-128' || name === 'favicon-tab') {
+    const sizes = { icon: [128, 128], 'logo-128': [128, 64], 'favicon-tab': [32, 32] };
+    const [w, h] = sizes[name];
+    const file = name === 'logo-128' ? 'assets/logo.svg' : 'assets/icon.svg';
     document.body.innerHTML = '';
-    document.body.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:24px;background:#2a2d34';
+    document.body.style.cssText =
+      'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#2a2d34;color:#ccc;font:14px/1.3 monospace';
     const img = document.createElement('img');
-    img.src = icon ? 'assets/icon.svg' : 'assets/logo.svg';
+    img.src = file;
     img.alt = 'ZOMBIE ARENA';
-    img.style.cssText = icon ? 'width:128px;height:128px' : 'width:128px;height:64px';
-    document.body.append(img);
+    img.style.cssText = `display:block;width:${w}px;height:${h}px`;
+    if (name === 'favicon-tab') {
+      const tab = document.createElement('div');
+      tab.style.cssText =
+        'display:flex;align-items:center;gap:10px;padding:8px 14px;width:240px;background:#3c3f47;border-radius:10px 10px 0 0;color:#eee;font:15px/1 sans-serif';
+      const title = document.createElement('span');
+      title.textContent = 'ZOMBIE ARENA';
+      tab.append(img, title);
+      document.body.append(tab);
+    } else {
+      document.body.append(img);
+    }
+    const caption = document.createElement('div');
+    caption.id = 'shot-size';
+    document.body.append(caption);
+    const measure = () => {
+      const r = img.getBoundingClientRect();
+      caption.textContent = `${file} at ${r.width} x ${r.height} CSS px (natural ${img.naturalWidth} x ${img.naturalHeight})`;
+    };
+    img.decode().then(measure, () => (caption.textContent = `${file} did not load`));
     return;
   }
 
