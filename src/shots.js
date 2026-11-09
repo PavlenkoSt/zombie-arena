@@ -46,8 +46,22 @@ export function setup(game, name) {
   game.autoWaves = false;
   document.title = `shot:${name}`;
 
-  if (name === 'start-screen') {
+  // Title screen with the logo. Open title-phone at 390x844 (src/viewport.html, add &mobile=1).
+  if (name === 'start-screen' || name === 'title-desktop' || name === 'title-phone') {
     game.menuAngle = 0.5;
+    return;
+  }
+
+  // The favicon at 128x128, and the logo at 128 px wide (legibility check), on a plain page.
+  if (name === 'icon' || name === 'logo-128') {
+    const icon = name === 'icon';
+    document.body.innerHTML = '';
+    document.body.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:24px;background:#2a2d34';
+    const img = document.createElement('img');
+    img.src = icon ? 'assets/icon.svg' : 'assets/logo.svg';
+    img.alt = 'ZOMBIE ARENA';
+    img.style.cssText = icon ? 'width:128px;height:128px' : 'width:128px;height:64px';
+    document.body.append(img);
     return;
   }
 

@@ -51,6 +51,42 @@ export async function run(game) {
   const startText = game.hud.startScreen.textContent;
   check('start screen shows title and prompt', startText.includes('ZOMBIE ARENA') && startText.includes('Click to play'));
 
+  // --- start screen logo and favicon ---
+  {
+    const logo = document.getElementById('logo');
+    let loaded = false;
+    try {
+      if (logo) await logo.decode();
+      loaded = !!logo && logo.naturalWidth > 0;
+    } catch (e) {
+      loaded = false;
+    }
+    check('start screen logo loads from assets/logo.svg', loaded && logo.getAttribute('src') === 'assets/logo.svg', logo ? `natural=${logo.naturalWidth}x${logo.naturalHeight}` : 'no #logo');
+    if (logo) {
+      const lr = logo.getBoundingClientRect();
+      const hr = game.hud.startHint.getBoundingClientRect();
+      const want = Math.min(420, innerWidth * 0.8);
+      check('logo is min(420 px, 80vw) wide, centred, above the start prompt',
+        near(lr.width, want, 0.5) && near(lr.left + lr.width / 2, innerWidth / 2, 1) && lr.bottom <= hr.top,
+        `width=${lr.width.toFixed(1)} want=${want.toFixed(1)} centre=${(lr.left + lr.width / 2).toFixed(1)}/${innerWidth / 2} bottom=${lr.bottom.toFixed(0)} prompt=${hr.top.toFixed(0)}`);
+    }
+    const icon = document.querySelector('link[rel="icon"]');
+    check('favicon link is assets/icon.svg', !!icon && icon.getAttribute('href') === 'assets/icon.svg', icon ? icon.getAttribute('href') : 'no link');
+    const svgHas = async (url, parts) => {
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        return res.ok && parts.every((p) => text.includes(p));
+      } catch (e) {
+        return false;
+      }
+    };
+    check('assets/logo.svg: viewBox 0 0 512 256, #7CFC00 and #c1121f, no fonts or images',
+      (await svgHas('assets/logo.svg', ['viewBox="0 0 512 256"', '#7CFC00', '#c1121f'])) && !(await svgHas('assets/logo.svg', ['<image'])) && !(await svgHas('assets/logo.svg', ['@font-face'])));
+    check('assets/icon.svg: viewBox 0 0 512 512, #111 rounded square radius 96',
+      await svgHas('assets/icon.svg', ['viewBox="0 0 512 512"', 'rx="96"', 'fill="#111"']));
+  }
+
   // --- weapons: rifle ---
   {
     fresh(0);

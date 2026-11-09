@@ -397,6 +397,27 @@ export async function run(game) {
       }
       r.f.remove();
     }
+
+    // Title screen on a 390 px phone: the logo is no wider than 80vw and sits above the prompt.
+    {
+      const r = await frameCheck(390, 844, 'title-phone');
+      if (r.error) {
+        check('390x844: title shot page loads', false, r.error);
+      } else {
+        const logo = r.d.getElementById('logo');
+        try {
+          if (logo) await logo.decode();
+        } catch (e) {
+          /* reported below by the size check */
+        }
+        const lr = logo ? logo.getBoundingClientRect() : null;
+        const hr = r.d.getElementById('start-hint').getBoundingClientRect();
+        check('390x844 title: logo shows, at most 80vw (312 px) wide, centred, above the prompt',
+          !!lr && logo.naturalWidth > 0 && lr.width > 0 && lr.width <= 312 + 0.5 && near(lr.left + lr.width / 2, 195, 1) && lr.bottom <= hr.top,
+          lr ? `width=${lr.width.toFixed(1)} left=${lr.left.toFixed(1)} bottom=${lr.bottom.toFixed(0)} prompt=${hr.top.toFixed(0)}` : 'no #logo');
+        r.f.remove();
+      }
+    }
   }
 
   function finish() {

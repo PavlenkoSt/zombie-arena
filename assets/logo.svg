@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 256" width="512" height="256" role="img" aria-labelledby="t">
+  <title id="t">ZOMBIE ARENA</title>
+  <!-- ZOMBIE ARENA logo. Hand-built block letters as paths (no fonts, no images). Transparent background. -->
+  <defs>
+    <g id="zombie">
+      <path transform="translate(137.6 18)" fill-rule="evenodd" d="M0 0 L55.2 0 L55.2 17 L25.4 75 L55.2 75 L55.2 92 L0 92 L0 75 L29.8 17 L0 17 Z"/> <!-- Z -->
+      <path transform="translate(199.8 18)" fill-rule="evenodd" d="M10 0 L45.2 0 L55.2 10 L55.2 82 L45.2 92 L10 92 L0 82 L0 10 Z M17 17 L38.2 17 L38.2 75 L17 75 Z"/> <!-- O -->
+      <path transform="translate(262 18)" fill-rule="evenodd" d="M0 0 L17 0 L34 31.3 L51.1 0 L68.1 0 L68.1 92 L51.1 92 L51.1 36.8 L34 60.7 L17 36.8 L17 92 L0 92 Z"/> <!-- M -->
+      <path transform="translate(337.1 18)" fill-rule="evenodd" d="M0 0 L45.2 0 L55.2 10 L55.2 41 L49.2 46 L55.2 51 L55.2 82 L45.2 92 L0 92 Z M17 17 L38.2 17 L38.2 38.9 L17 38.9 Z M17 53.1 L38.2 53.1 L38.2 75 L17 75 Z"/> <!-- B -->
+      <path transform="translate(399.3 18)" fill-rule="evenodd" d="M0 0 L40.5 0 L40.5 13.6 L28.7 13.6 L28.7 78.4 L40.5 78.4 L40.5 92 L0 92 L0 78.4 L11.7 78.4 L11.7 13.6 L0 13.6 Z"/> <!-- I -->
+      <path transform="translate(446.8 18)" fill-rule="evenodd" d="M0 0 L49.7 0 L49.7 17 L17 17 L17 38.4 L42.7 38.4 L42.7 53.7 L17 53.7 L17 75 L49.7 75 L49.7 92 L0 92 Z"/> <!-- E -->
+      <!-- drips: open paths, so the top edge has no outline and the drip joins the letter -->
+      <path d="M145.1 107 V135 C138 141 145.1 150 151.6 150 C158.1 150 165.3 141 158.1 135 V107"/>
+      <path d="M477.5 107 V145 C469.8 151 477.5 160 484.5 160 C491.5 160 499.2 151 491.5 145 V107"/>
+    </g>
+    <g id="arena">
+      <path transform="translate(184.5 126)" fill-rule="evenodd" d="M0 64 L0 8 L8 0 L41.9 0 L49.9 8 L49.9 64 L36.9 64 L36.9 46.3 L13 46.3 L13 64 Z M13 13 L36.9 13 L36.9 33.3 L13 33.3 Z"/> <!-- A -->
+      <path transform="translate(242.4 126)" fill-rule="evenodd" d="M0 0 L40.6 0 L48.6 8 L48.6 30.2 L41.6 37.2 L48.6 64 L35.6 64 L28.6 43.7 L13 43.7 L13 64 L0 64 Z M13 13 L35.6 13 L35.6 30.7 L13 30.7 Z"/> <!-- R -->
+      <path transform="translate(299.1 126)" fill-rule="evenodd" d="M0 0 L34.6 0 L34.6 13 L13 13 L13 26.2 L27.6 26.2 L27.6 37.9 L13 37.9 L13 51 L34.6 51 L34.6 64 L0 64 Z"/> <!-- E -->
+      <path transform="translate(341.6 126)" fill-rule="evenodd" d="M0 64 L0 0 L13 0 L36.9 33.3 L36.9 0 L49.9 0 L49.9 64 L36.9 64 L13 30.7 L13 64 Z"/> <!-- N -->
+      <path transform="translate(399.5 126)" fill-rule="evenodd" d="M0 64 L0 8 L8 0 L41.9 0 L49.9 8 L49.9 64 L36.9 64 L36.9 46.3 L13 46.3 L13 64 Z M13 13 L36.9 13 L36.9 33.3 L13 33.3 Z"/> <!-- A -->
+      <path d="M185.5 187 V199 C179.5 205 185.5 214 191 214 C196.5 214 202.6 205 196.5 199 V187"/>
+      <path d="M242.9 187 V213 C236.3 219 242.9 228 248.9 228 C254.9 228 261.5 219 254.9 213 V187"/>
+      <path d="M379.5 187 V205 C373.5 211 379.5 220 385 220 C390.5 220 396.6 211 390.5 205 V187"/>
+      <path d="M437.9 187 V191 C432.4 197 437.9 206 442.9 206 C447.9 206 453.4 197 447.9 191 V187"/>
+    </g>
+  </defs>
+
+  <!-- drop shadow -->
+  <g fill="#0b0f0a" stroke="#0b0f0a" stroke-width="6" stroke-linejoin="round" transform="translate(4 5)">
+    <use href="#zombie"/>
+    <use href="#arena"/>
+  </g>
+  <!-- ZOMBIE: toxic green, dark outline (stroke 6) -->
+  <use href="#zombie" fill="#7CFC00" stroke="#0b0f0a" stroke-width="6" stroke-linejoin="round"/>
+  <!-- ARENA: blood red, same outline -->
+  <use href="#arena" fill="#c1121f" stroke="#0b0f0a" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- skull mark -->
+  <g transform="translate(14 47) scale(1.1)">
+    <path fill="#0b0f0a" transform="translate(4 5)" d="M30 2 H70 L98 30 V66 L84 76 V98 H16 V76 L2 66 V30 Z" stroke="#0b0f0a" stroke-width="6" stroke-linejoin="round"/>
+    <g id="skull">
+      <path fill="#e9e4cf" stroke="#0b0f0a" stroke-width="6" stroke-linejoin="round"
+        d="M30 2 H70 L98 30 V66 L84 76 V98 H16 V76 L2 66 V30 Z"/>
+      <path fill="none" stroke="#0b0f0a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" d="M58 3 L53 14 L61 21 L55 32"/>
+      <path fill="#0b0f0a" d="M13 40 L45 49 L42 65 L18 63 Z M87 40 L55 49 L58 65 L82 63 Z M50 66 L57 79 H43 Z"/>
+      <path fill="#7CFC00" d="M25 50 h10 v8 h-10 Z M65 50 h10 v8 h-10 Z"/>
+      <path fill="none" stroke="#0b0f0a" stroke-width="4" d="M16 84 H84 M32 77 V98 M50 77 V98 M68 77 V98"/>
+    </g>
+  </g>
+</svg>
